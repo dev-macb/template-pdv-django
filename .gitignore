@@ -1,0 +1,7 @@
+# Ignorar diretórios
+venv
+__pycache__
+
+# Ignorar Arquivos
+*.pyc
+*.sqlite3
