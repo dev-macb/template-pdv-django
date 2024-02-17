@@ -1,0 +1,26 @@
+<form action="{% url 'novo_produto' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="">Imagens:</label>
+    <input type="file" name="imagens" multiple>
+    <br><br>
+    <label for="">Nome:</label>
+    <input type="text" name="nome">
+    <br><br>
+    <label for="">Categoria:</label>
+    <select name="categoria" id="">
+        {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">{{ categoria.titulo }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+    <label for="">Quantidade:</label>
+    <input type="number" name="quantidade">
+    <br><br>
+    <label for="">Preço de Custo:</label>
+    <input type="number" name="preco_custo">
+    <br><br>
+    <label for="">Preço de Venda:</label>
+    <input type="number" name="preco_venda">
+    <br><br>
+    <input type="submit" value="Enviar">
+</form>
