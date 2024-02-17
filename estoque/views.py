@@ -1,10 +1,15 @@
-from django.shortcuts import render, HttpResponse
-from PIL import Image
-from datetime import date
-from .models import Produto, Categoria, Imagem
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
+from PIL import Image
+from io import BytesIO
+from datetime import date
+from django.urls import reverse
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.shortcuts import render, HttpResponse
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from .models import Produto, Categoria, Imagem
+
 
 def novo_produto(request):
     if request.method == 'POST':
@@ -44,7 +49,14 @@ def novo_produto(request):
             
             imagem = Imagem(imagem=img_temporaria, id_produto=novo_produto)
             imagem.save()
+        
+        messages.add_message(request, messages.SUCCESS, 'Produto cadastrado com êxito!')
+        return redirect(reverse('novo_produto'))
 
-
+    produtos = Produto.objects.all()
     categorias = Categoria.objects.all()
-    return render(request, 'novo_produto.html', {'categorias': categorias})
+    
+    return render(request, 'novo_produto.html', {
+        'produtos': produtos,
+        'categorias': categorias
+    })

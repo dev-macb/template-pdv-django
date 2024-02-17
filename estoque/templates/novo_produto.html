@@ -1,26 +1,67 @@
-<form action="{% url 'novo_produto' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label for="">Imagens:</label>
-    <input type="file" name="imagens" multiple>
-    <br><br>
-    <label for="">Nome:</label>
-    <input type="text" name="nome">
-    <br><br>
-    <label for="">Categoria:</label>
-    <select name="categoria" id="">
-        {% for categoria in categorias %}
-            <option value="{{ categoria.id }}">{{ categoria.titulo }}</option>
-        {% endfor %}
-    </select>
-    <br><br>
-    <label for="">Quantidade:</label>
-    <input type="number" name="quantidade">
-    <br><br>
-    <label for="">Preço de Custo:</label>
-    <input type="number" name="preco_custo">
-    <br><br>
-    <label for="">Preço de Venda:</label>
-    <input type="number" name="preco_venda">
-    <br><br>
-    <input type="submit" value="Enviar">
-</form>
+{% extends 'base.html' %}
+{% load filters %}
+
+
+{% block title %}
+    Cadastrar Produto
+{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <br>
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <h1>Cadastrar Produto</h1>
+        <form action="{% url 'novo_produto' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <br><br>
+            <label for="">Imagens:</label>
+            <input class="form-control" type="file" name="imagens" multiple>
+            <br>
+            <label for="">Nome:</label>
+            <input class="form-control" type="text" name="nome">
+            <br>
+            <label for="">Categoria:</label>
+            <select class="form-control" name="categoria" id="">
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}">{{ categoria.titulo }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="">Quantidade:</label>
+            <input class="form-control" type="number" name="quantidade">
+            <br>
+            <label for="">Preço de Custo:</label>
+            <input class="form-control" type="number" name="preco_custo">
+            <br>
+            <label for="">Preço de Venda:</label>
+            <input class="form-control" type="number" name="preco_venda">
+            <br>
+            <input class="btn btn-success" type="submit" value="Enviar">
+        </form>
+        <hr>
+        <div>
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px;">
+                {% for produto in produtos %}
+                    <div class="card" style="width: 18rem;">
+                        {% if produto|obter_img_produto %}
+                            <img class="card-img-top" src="{{ produto|obter_img_produto }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ produto.nome }}</h5>
+                            <p>
+                                {{ produto.categoria }}
+                            </p>
+                            <a href="#" class="btn btn-primary">Abrir</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}
