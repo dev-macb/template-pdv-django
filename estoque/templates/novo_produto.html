@@ -56,7 +56,7 @@
                             <p>
                                 {{ produto.categoria }}
                             </p>
-                            <a href="#" class="btn btn-primary">Abrir</a>
+                            <a href="{% url 'obter_produto' produto.slug %}" class="btn btn-primary">Abrir</a>
                         </div>
                     </div>
                 {% endfor %}

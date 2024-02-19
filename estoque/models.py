@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.template.defaultfilters import slugify
 
 class Categoria(models.Model):
     titulo    = models.CharField(max_length=50)
@@ -11,6 +11,7 @@ class Categoria(models.Model):
 
 
 class Produto(models.Model):
+    slug          = models.SlugField(unique=True, null=True, blank=True)
     nome          = models.CharField(max_length=50)
     categoria     = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
     quantidade    = models.FloatField()
@@ -22,6 +23,11 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
     
+    def salvar(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nome) 
+
+        return super().save(*args, **kwargs)
 
     def gerar_desconto(self, desconto):
         return self.preco_venda - (self.preco_venda * desconto / 100 )

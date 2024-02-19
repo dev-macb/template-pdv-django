@@ -6,11 +6,14 @@ from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.shortcuts import render, HttpResponse
+from rolepermissions.decorators import has_permission_decorator
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+from .forms import ProdutoFormulario
 from .models import Produto, Categoria, Imagem
 
 
+@has_permission_decorator('cadastrar_produtos')
 def novo_produto(request):
     if request.method == 'POST':
         imagens     = request.FILES.getlist('imagens')
@@ -27,16 +30,16 @@ def novo_produto(request):
             preco_custo  = preco_custo,
             preco_venda  = preco_venda
         )
-        novo_produto.save()
+        novo_produto.salvar()
 
         for arquivo in imagens:
             saida = BytesIO()
             nome_arquivo = f'{date.today()}_{novo_produto.id}.jpg'
             
             img = Image.open(arquivo)
-            img.convert('RGB')
-            img.resize((300, 300))
-            img.save(saida, format='JPEG', qualit=100)
+            img_rgb = img.convert('RGB')
+            img_rgb.resize((300, 300))
+            img_rgb.save(saida, format='JPEG', qualit=100)
             saida.seek(0)
             img_temporaria = InMemoryUploadedFile(
                 saida, 
@@ -60,3 +63,13 @@ def novo_produto(request):
         'produtos': produtos,
         'categorias': categorias
     })
+
+
+def obter_produto(request, slug):
+    if request.method == 'GET':
+        produto = Produto.objects.get(slug=slug)
+        formulario = ProdutoFormulario(initial=produto.__dict__)
+        
+        return render(request, 'obter_produto.html', {
+            'formulario': formulario
+        })
